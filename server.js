@@ -16,26 +16,36 @@ const bodyParser = require('body-parser')
 
 
 const data = [
-  {longUrl: 'http://google.com', id: randomstring.generate(7)}
+  {longUrl: 'http://google.com', id: randomstring.generate(6)}
 ]
+
+const authMiddleware = basicAuth({
+  users: { 'admin': 'admin' },
+  challenge: true,
+  realm: 'Imb4T3st4pp'
+})
+
+const bodyParserMiddleware = bodyParser.urlencoded({ extended: false })
+
 
 app.set('view engine', 'ejs')
 app.use('/static', express.static('public'))
 app.use(morgan('tiny')) // morgan 짧게 설정 모르간이 뭐지???? 로깅과 인증에서 설정한건데..
 
-app.use(bodyParser.urlencoded({ extended: false })) 
+// app.use(bodyParser.urlencoded({ extended: false })) 
 
 // app.use(basicAuth({
 //     users: { 'admin': 'supersecret' }
 // }))
-app.use(basicAuth({
-  users: { 'admin': 'admin' },
-  challenge: true,
-  realm: 'Imb4T3st4pp'
-}))
+// app.use(basicAuth({
+//   users: { 'admin': 'admin' },
+//   challenge: true,
+//   realm: 'Imb4T3st4pp'
+// }))
 
 
-app.get('/', (req, res) => {
+// app.get('/', (req, res) => {
+app.get('/', authMiddleware, (req, res) => {
   // res.send('hsootree express')
   // res.render('index.ejs')
   res.render('index.ejs', {data})
@@ -49,11 +59,11 @@ app.get('/:id', (req, res) => {
     res.redirect(301, matched.longUrl)
   } else {
     res.status(404)
-    res.send('404 Not Found')// 실무에서 이렇게 하면 사용자가 사용이 불편하여 떠난다.
+    res.send('404 Not Found')// 실무에서 이렇게 하면 사용자가 사용이 불편하다.
   }
 })
 
-app.post('/', (req, res) => {
+app.post('/', authMiddleware, bodyParserMiddleware, (req, res) => {
   const longUrl = req.body.longUrl
   let id;
   while(true) {
