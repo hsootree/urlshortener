@@ -1,3 +1,10 @@
 body {
   background-color: #909090;
 }
+table, td{
+  border-collapse: collapse;
+  border: 1px solid #BEF902;
+}
+/* td {
+  padding: 5%;
+} */

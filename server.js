@@ -1,4 +1,12 @@
 const express = require('express') // command + enter 뒤에 자동생성된  것을 건너뛰고 줄바꿈 단축키
+
+const data = [
+  {longUrl: 'http://google.com', id: '58DX37'} // 가짜 데이터 (목 데이터라고도 함.)
+]// 실제로 이렇게 배열을 정리하지는 않음. 
+// http://localhost:3000/58DX37 접속하면
+// 302 응답이 오고
+// 
+
 const app = express()
 const morgan = require('morgan')
 // const app = require('express')()// 중복선언이 되어서 에러남. 
@@ -22,7 +30,9 @@ app.use(basicAuth({
 
 app.get('/', (req, res) => {
   // res.send('hsootree express')
-  res.render('index.ejs')
+  // res.render('index.ejs')
+  res.render('index.ejs', {data})
+  
 })
 
 app.listen(3000, () => {
