@@ -6,7 +6,8 @@ app.set('view engine', 'ejs')
 
 
 app.get('/', (req, res) => {
-  res.send('hsootree express')
+  // res.send('hsootree express')
+  res.render('index.ejs')
 })
 
 app.listen(3000, () => {
