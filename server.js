@@ -12,7 +12,7 @@ const morgan = require('morgan')
 // const app = require('express')()// 중복선언이 되어서 에러남. 
 const basicAuth = require('express-basic-auth')
 const randomstring = require('randomstring')
-
+const bodyParser = require('body-parser')
 
 
 const data = [
@@ -23,7 +23,8 @@ app.set('view engine', 'ejs')
 app.use('/static', express.static('public'))
 app.use(morgan('tiny')) // morgan 짧게 설정 모르간이 뭐지???? 로깅과 인증에서 설정한건데..
 
- 
+app.use(bodyParser.urlencoded({ extended: false })) 
+
 // app.use(basicAuth({
 //     users: { 'admin': 'supersecret' }
 // }))
@@ -50,6 +51,21 @@ app.get('/:id', (req, res) => {
     res.status(404)
     res.send('404 Not Found')// 실무에서 이렇게 하면 사용자가 사용이 불편하여 떠난다.
   }
+})
+
+app.post('/', (req, res) => {
+  const longUrl = req.body.longUrl
+  let id;
+  while(true) {
+    const candidate = randomstring.generate(6)
+    const matched = data.find(item => item.id === candidate)
+    if (!matched) {
+      id = candidate
+      break 
+    }
+  }
+  data.push({id, longUrl})
+  res.redirect('/')
 })
 
 app.listen(3000, () => {
